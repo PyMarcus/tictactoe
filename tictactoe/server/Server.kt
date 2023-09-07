@@ -8,11 +8,18 @@ import java.lang.Exception
 import java.net.ServerSocket
 import java.net.Socket
 import java.util.concurrent.Executors
+import com.example.tictactoe.map.Map
+import com.example.tictactoe.messages.Messages
+
+/*
+*
+* Servidor tcp que recebe conexao do cliente, em uma thread, e inicia
+* o mapa e o jogo, por consequencia*
+*
+* */
 
 class Server() {
-    /*
-    * TCP class that receive 2 client connections.
-    * */
+
     private var ipAddress: String = ""
     private var port: Int = 0
     private val threadPool = Executors.newFixedThreadPool(2)
@@ -31,7 +38,6 @@ class Server() {
         }
     }
 
-    // run: Execute the server on ip and port, by default localhost:9999
     public fun run(){
         createSocket()
     }
@@ -41,11 +47,9 @@ class Server() {
         println("[+]Running server on port ${this.port}")
 
         try{
-
+            Messages.WELCOME.send()
             while (true){
                 val clientSocket = serverSocket.accept()
-                println("Client ${clientSocket.inetAddress}")
-
                 val clientHandler = ClientHandler(clientSocket)
                 threadPool.execute(clientHandler)
             }
